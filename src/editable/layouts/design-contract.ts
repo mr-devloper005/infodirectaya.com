@@ -1,23 +1,25 @@
 import type { CSSProperties } from 'react'
 
 export const editableRootStyle = {
-  '--slot4-page-bg': '#fff9f2',
-  '--slot4-page-text': '#111111',
-  '--slot4-panel-bg': '#fff3e8',
+  '--slot4-page-bg': '#f6f6f4',
+  '--slot4-page-text': '#1f1f1f',
+  '--slot4-panel-bg': '#fff8f1',
   '--slot4-surface-bg': '#ffffff',
-  '--slot4-muted-text': '#4f463f',
-  '--slot4-soft-muted-text': '#6b6258',
-  '--slot4-accent': '#ff6600',
-  '--slot4-accent-fill': '#ff6600',
-  '--slot4-accent-soft': '#d1e0ff',
-  '--slot4-dark-bg': '#111111',
+  '--slot4-muted-text': '#55504b',
+  '--slot4-soft-muted-text': '#756e66',
+  '--slot4-accent': '#fb7a21',
+  '--slot4-accent-fill': '#fb7a21',
+  '--slot4-accent-soft': '#fff0e4',
+  '--slot4-dark-bg': '#262626',
   '--slot4-dark-text': '#ffffff',
-  '--slot4-media-bg': '#e9e2da',
-  '--slot4-cream': '#fdf1e5',
-  '--slot4-warm': '#fff9f2',
-  '--slot4-lavender': '#d1e0ff',
-  '--slot4-gray': '#f6f6f6',
-  '--slot4-body-gradient': 'linear-gradient(180deg, #fdf1e5 0%, #fff9f2 38%, #f6f6f6 100%)',
+  '--slot4-media-bg': '#e7e3dc',
+  '--slot4-cream': '#fff8f1',
+  '--slot4-warm': '#ffffff',
+  '--slot4-lavender': '#f2f2ef',
+  '--slot4-gray': '#f6f6f4',
+  '--slot4-body-gradient': 'linear-gradient(90deg, rgba(31,31,31,0.035) 0 1px, transparent 1px 100%), linear-gradient(180deg, #f7f7f5 0%, #ffffff 42%, #f5f5f2 100%)',
+  '--editable-container': '1120px',
+  '--editable-border': 'rgba(31,31,31,0.12)',
 } as CSSProperties
 
 export const editablePalette = {
@@ -50,8 +52,8 @@ export const editablePalette = {
 export const editableDesignContract = {
   shell: {
     page: `min-h-screen ${editablePalette.pageBg} ${editablePalette.pageText}`,
-    section: 'mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8',
-    sectionY: 'py-14 sm:py-16 lg:py-20',
+    section: 'mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8',
+    sectionY: 'py-10 sm:py-12 lg:py-14',
   },
   layout: {
     safeGrid: 'grid gap-6 md:grid-cols-2 xl:grid-cols-3',
@@ -60,20 +62,20 @@ export const editableDesignContract = {
     minRailCard: 'w-[140px] shrink-0 snap-start sm:w-[160px]',
   },
   type: {
-    eyebrow: 'text-xs font-extrabold uppercase tracking-[0.18em]',
-    heroTitle: 'text-4xl font-extrabold leading-[1.08] tracking-tight sm:text-5xl lg:text-[3.25rem]',
-    sectionTitle: 'text-3xl font-extrabold tracking-tight sm:text-4xl',
+    eyebrow: 'text-xs font-extrabold uppercase',
+    heroTitle: 'text-4xl font-extrabold leading-[1.06] tracking-normal sm:text-5xl lg:text-[3.15rem]',
+    sectionTitle: 'text-2xl font-extrabold tracking-normal sm:text-3xl',
     body: 'text-base leading-relaxed',
   },
   surface: {
-    card: `rounded-2xl border ${editablePalette.border} ${editablePalette.surfaceBg} ${editablePalette.shadow}`,
-    soft: `rounded-2xl border ${editablePalette.border} ${editablePalette.surfaceBg}`,
-    dark: `rounded-2xl ${editablePalette.darkBg} ${editablePalette.darkText} ${editablePalette.shadowStrong}`,
+    card: `rounded-lg border ${editablePalette.border} ${editablePalette.surfaceBg} ${editablePalette.shadow}`,
+    soft: `rounded-lg border ${editablePalette.border} ${editablePalette.surfaceBg}`,
+    dark: `rounded-lg ${editablePalette.darkBg} ${editablePalette.darkText} ${editablePalette.shadowStrong}`,
   },
   button: {
-    primary: `inline-flex items-center justify-center rounded-full ${editablePalette.darkBg} px-8 py-3.5 text-sm font-semibold text-white transition hover:opacity-90`,
-    secondary: `inline-flex items-center justify-center rounded-full border ${editablePalette.border} ${editablePalette.surfaceBg} px-8 py-3.5 text-sm font-semibold ${editablePalette.surfaceText} transition hover:bg-black/[0.03]`,
-    accent: `inline-flex items-center justify-center rounded-full ${editablePalette.accentBg} px-8 py-3.5 text-sm font-semibold text-white transition hover:opacity-90`,
+    primary: `inline-flex items-center justify-center rounded-md ${editablePalette.accentBg} px-6 py-3 text-sm font-extrabold text-white transition hover:opacity-90`,
+    secondary: `inline-flex items-center justify-center rounded-md border ${editablePalette.border} ${editablePalette.surfaceBg} px-6 py-3 text-sm font-extrabold ${editablePalette.surfaceText} transition hover:bg-black/[0.03]`,
+    accent: `inline-flex items-center justify-center rounded-md ${editablePalette.darkBg} px-6 py-3 text-sm font-extrabold text-white transition hover:opacity-90`,
   },
   media: {
     frame: `relative overflow-hidden rounded-xl ${editablePalette.mediaBg}`,

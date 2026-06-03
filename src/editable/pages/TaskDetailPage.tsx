@@ -1,12 +1,13 @@
 import Link from 'next/link'
 import type { CSSProperties } from 'react'
 import { notFound } from 'next/navigation'
-import { ArrowLeft, Bookmark, Building2, Camera, CheckCircle2, Download, ExternalLink, FileText, Globe2, Mail, MapPin, MessageCircle, Phone, Tag, UserRound } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Bookmark, Building2, Camera, CheckCircle2, ChevronRight, Download, ExternalLink, FileText, Globe2, Linkedin, Mail, MapPin, MessageCircle, Phone, Tag, Twitter, UserRound } from 'lucide-react'
 import { buildPostMetadata, buildTaskMetadata } from '@/lib/seo'
 import { buildPostUrl, fetchArticleComments, fetchTaskPostBySlug, fetchTaskPosts } from '@/lib/task-data'
 import { getTaskConfig, SITE_CONFIG, type TaskKey } from '@/lib/site-config'
 import type { SitePost } from '@/lib/site-connector'
 import { EditableSiteShell } from '@/editable/shell/EditableSiteShell'
+import { globalContent } from '@/editable/content/global.content'
 import { getVisualPreset, visualSystem } from '@/editable/theme/visual-system'
 
 export const revalidate = 3
@@ -126,7 +127,7 @@ export function TaskDetailView({ task, post, related, comments = [] }: { task: T
 function BackLink({ task }: { task: TaskKey }) {
   const taskConfig = getTaskConfig(task)
   return (
-    <Link href={taskConfig?.route || '/'} className="inline-flex items-center gap-2 rounded-full border border-[var(--editable-border)] bg-white/70 px-4 py-2 text-sm font-black">
+    <Link href={taskConfig?.route || '/'} className="inline-flex items-center gap-2 rounded-md border border-[var(--editable-border)] bg-white px-4 py-2 text-sm font-black hover:bg-[#fff0e4]">
       <ArrowLeft className="h-4 w-4" /> Back to {taskConfig?.label || 'posts'}
     </Link>
   )
@@ -134,17 +135,140 @@ function BackLink({ task }: { task: TaskKey }) {
 
 function ArticleDetail({ post, related, comments }: { post: SitePost; related: SitePost[]; comments: Array<{ id: string; name: string; comment: string; createdAt: string }> }) {
   const images = getImages(post)
+  const primaryImage = images[0]
+  const baseUrl = globalContent.site.baseUrl.replace(/\/$/, '')
+  const articleUrl = `${baseUrl}${buildPostUrl('article', post.slug)}`
+  const encodedUrl = encodeURIComponent(articleUrl)
+  const encodedTitle = encodeURIComponent(post.title)
+  const tagLinks = (post.tags || []).slice(0, 3)
+  const previousPost = related[0] || null
+  const nextPost = related[1] || null
+  const sidebarPosts = related.slice(0, 3)
+  const relatedPosts = related.slice(0, 3)
+
   return (
-    <section className="mx-auto grid max-w-[var(--editable-container)] gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[minmax(0,1fr)_350px] lg:px-8 lg:py-16">
-      <article className="min-w-0 rounded-[2.7rem] border border-[var(--editable-border)] bg-[var(--detail-surface)] p-5 shadow-[0_30px_90px_rgba(15,23,42,0.09)] sm:p-8 lg:p-12">
-        <BackLink task="article" />
-        <p className="mt-8 text-xs font-black uppercase tracking-[0.28em] text-[var(--detail-accent)]">{categoryOf(post, 'Article')}</p>
-        <h1 className="mt-4 text-4xl font-black leading-[0.98] tracking-[-0.07em] sm:text-5xl lg:text-7xl">{post.title}</h1>
-        {images[0] ? <img src={images[0]} alt="" className="mt-8 max-h-[620px] w-full rounded-[2rem] object-cover" /> : null}
+    <section className="mx-auto grid max-w-[var(--editable-container)] gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:px-8 lg:py-14">
+      <article className="min-w-0 border border-[var(--editable-border)] bg-white p-5 shadow-sm sm:p-8 lg:p-10">
+        <div className="flex flex-wrap items-center gap-2 text-sm text-neutral-500">
+          <Link href="/" className="font-semibold hover:text-[#fb7a21]">Home</Link>
+          <ChevronRight className="h-4 w-4" />
+          <Link href="/article" className="font-semibold hover:text-[#fb7a21]">Articles</Link>
+          <ChevronRight className="h-4 w-4" />
+          <span className="line-clamp-1 min-w-0 flex-1 text-neutral-600">{post.title}</span>
+        </div>
+
+        <div className="mt-8 flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <p className="text-xs font-black uppercase text-[#fb7a21]">{categoryOf(post, 'Article')}</p>
+            <h1 className="mt-4 max-w-4xl text-4xl font-black leading-tight text-[#1f1f1f] sm:text-5xl lg:text-6xl">{post.title}</h1>
+          </div>
+          <BackLink task="article" />
+        </div>
+
+        {primaryImage ? <img src={primaryImage} alt="" className="mt-8 max-h-[560px] w-full border border-[var(--editable-border)] object-cover" /> : null}
+
+        <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-y border-black/[0.08] py-4">
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="text-xs font-black uppercase text-neutral-500">Share</span>
+            <Link href={`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`} target="_blank" rel="noreferrer" className="inline-flex h-10 w-10 items-center justify-center bg-[#3b5998] text-white transition hover:opacity-90" aria-label="Share on Facebook">
+              <span className="text-base font-black">f</span>
+            </Link>
+            <Link href={`https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`} target="_blank" rel="noreferrer" className="inline-flex h-10 w-10 items-center justify-center bg-[#1da1f2] text-white transition hover:opacity-90" aria-label="Share on Twitter">
+              <Twitter className="h-4 w-4" />
+            </Link>
+            <Link href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`} target="_blank" rel="noreferrer" className="inline-flex h-10 w-10 items-center justify-center bg-[#0077b5] text-white transition hover:opacity-90" aria-label="Share on LinkedIn">
+              <Linkedin className="h-4 w-4" />
+            </Link>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <Link href="/article" className="rounded-md bg-[#fb7a21] px-5 py-3 text-sm font-black text-white">Browse Articles</Link>
+            <Link href="/contact" className="rounded-md border border-[var(--editable-border)] bg-white px-5 py-3 text-sm font-black text-[#1f1f1f] hover:bg-[#fff0e4]">Send Feedback</Link>
+          </div>
+        </div>
+
         <BodyContent post={post} />
+
+        {tagLinks.length ? (
+          <div className="mt-10 flex flex-wrap items-center gap-3 border-t border-black/[0.08] pt-6">
+            <Tag className="h-4 w-4 text-neutral-500" />
+            {tagLinks.map((tag) => (
+              <Link key={tag} href={`/search?q=${encodeURIComponent(tag)}`} className="bg-[#fff0e4] px-4 py-2 text-xs font-black uppercase text-[#fb7a21]">
+                {tag}
+              </Link>
+            ))}
+          </div>
+        ) : null}
+
+        {previousPost || nextPost ? (
+          <div className="mt-10 grid gap-4 border-t border-black/[0.08] pt-6 sm:grid-cols-2">
+            {previousPost ? (
+              <Link href={buildPostUrl('article', previousPost.slug)} className="group flex items-center gap-4 border border-[var(--editable-border)] p-5 hover:bg-[#fff8f1]">
+                <ArrowLeft className="h-9 w-9 shrink-0 text-[#fb7a21]" />
+                <div className="min-w-0">
+                  <p className="text-xs font-black uppercase text-neutral-500">Previous Post</p>
+                  <h3 className="mt-1 line-clamp-2 text-2xl font-black leading-tight text-[#1f1f1f]">{previousPost.title}</h3>
+                </div>
+              </Link>
+            ) : <div />}
+            {nextPost ? (
+              <Link href={buildPostUrl('article', nextPost.slug)} className="group flex items-center justify-between gap-4 border border-[var(--editable-border)] p-5 hover:bg-[#fff8f1]">
+                <div className="min-w-0">
+                  <p className="text-xs font-black uppercase text-neutral-500">Next Post</p>
+                  <h3 className="mt-1 line-clamp-2 text-2xl font-black leading-tight text-[#1f1f1f]">{nextPost.title}</h3>
+                </div>
+                <ArrowRight className="h-9 w-9 shrink-0 text-[#fb7a21]" />
+              </Link>
+            ) : null}
+          </div>
+        ) : null}
+
+        {relatedPosts.length ? (
+          <section className="mt-10 border-t border-black/[0.08] pt-8">
+            <h2 className="text-3xl font-black text-[#1f1f1f]">Related Posts</h2>
+            <div className="mt-6 grid gap-6 sm:grid-cols-3">
+              {relatedPosts.map((item) => (
+                <Link key={item.id || item.slug} href={buildPostUrl('article', item.slug)} className="group">
+                  <p className="text-[11px] font-black uppercase text-neutral-500">{categoryOf(item, 'Article')}</p>
+                  <h3 className="mt-2 text-2xl font-black leading-tight text-[#1f1f1f] group-hover:text-[#fb7a21]">{item.title}</h3>
+                </Link>
+              ))}
+            </div>
+          </section>
+        ) : null}
+
         <EditableComments slug={post.slug} comments={comments} />
       </article>
-      <RelatedPanel task="article" post={post} related={related} />
+
+      <aside className="space-y-6">
+        {sidebarPosts.length ? (
+          <div className="border border-[var(--editable-border)] bg-white p-5 shadow-sm">
+            <SectionLabel title="Most Read" />
+            <div className="mt-5 grid gap-4">
+              {sidebarPosts.map((item) => (
+                <Link key={item.id || item.slug} href={buildPostUrl('article', item.slug)} className="grid grid-cols-[88px_minmax(0,1fr)] gap-4 border-b border-black/[0.08] pb-4 last:border-b-0 last:pb-0 hover:opacity-90">
+                  <img src={getImages(item)[0] || '/placeholder.svg?height=300&width=300'} alt="" className="h-20 w-20 object-cover" />
+                  <div className="min-w-0">
+                    <p className="text-[11px] font-black uppercase text-neutral-500">{categoryOf(item, 'Article')}</p>
+                    <h3 className="mt-1 line-clamp-3 text-lg font-black leading-tight text-[#1f1f1f]">{item.title}</h3>
+                  </div>
+                </Link>
+              ))}
+            </div>
+            <Link href="/article" className="mt-5 inline-flex w-full items-center justify-center bg-[#2a2a2a] px-4 py-3 text-sm font-black uppercase text-white hover:bg-[#fb7a21]">
+              Browse More
+            </Link>
+          </div>
+        ) : null}
+
+        <div className="border border-[var(--editable-border)] bg-white p-5 shadow-sm">
+          <SectionLabel title="Stay With Us" />
+          <p className="mt-5 text-base leading-8 text-neutral-700">Get the latest article highlights, fresh features, and editorial picks from {globalContent.site.name}.</p>
+          <div className="mt-5 grid gap-3">
+            <Link href="/signup" className="inline-flex items-center justify-center bg-[#fb7a21] px-5 py-3 text-sm font-black uppercase text-white hover:opacity-90">Create Account</Link>
+            <Link href="/contact" className="inline-flex items-center justify-center border border-[var(--editable-border)] px-5 py-3 text-sm font-black uppercase text-[#1f1f1f] hover:bg-[#fff8f1]">Contact Editor</Link>
+          </div>
+        </div>
+      </aside>
     </section>
   )
 }
@@ -379,21 +503,20 @@ function RelatedPanel({ task, post, related, compact = false }: { task: TaskKey;
   const taskConfig = getTaskConfig(task)
   return (
     <aside className="min-w-0 space-y-5">
-      {!compact ? (
-        <div className="rounded-[2rem] border border-[var(--editable-border)] bg-white/70 p-5 backdrop-blur">
-          <p className="text-xs font-black uppercase tracking-[0.22em] opacity-55">About this post</p>
+      {!compact && task !== 'article' ? (
+        <div className="rounded-lg border border-[var(--editable-border)] bg-white p-5">
+          <p className="text-xs font-black uppercase opacity-55">About this post</p>
           <div className="mt-4 grid gap-3 text-sm font-bold opacity-75">
             <p className="inline-flex items-center gap-2"><Tag className="h-4 w-4" /> Task: {taskConfig?.label || task}</p>
-            <p className="inline-flex items-center gap-2"><CheckCircle2 className="h-4 w-4" /> Site: {SITE_CONFIG.name}</p>
-            {post.publishedAt ? <p>Published: {new Date(post.publishedAt).toLocaleDateString()}</p> : null}
+            <p className="inline-flex items-center gap-2"><CheckCircle2 className="h-4 w-4" /> Site: {globalContent.site.name}</p>
           </div>
         </div>
       ) : null}
       {related.length ? (
-        <div className="rounded-[2rem] border border-[var(--editable-border)] bg-white/70 p-5 backdrop-blur">
+        <div className="rounded-lg border border-[var(--editable-border)] bg-white p-5 shadow-sm">
           <div className="flex items-center justify-between gap-3">
-            <h2 className="text-lg font-black tracking-[-0.04em]">More like this</h2>
-            <Link href={taskConfig?.route || '/'} className="text-xs font-black uppercase tracking-[0.16em] opacity-55">View all</Link>
+            <h2 className="text-lg font-black">{task === 'article' ? 'More articles' : 'More like this'}</h2>
+            <Link href={taskConfig?.route || '/'} className="text-xs font-black uppercase text-[#fb7a21]">View all</Link>
           </div>
           <div className="mt-5 grid gap-3">
             {related.map((item) => <RelatedCard key={item.id || item.slug} task={task} post={item} />)}
@@ -401,6 +524,15 @@ function RelatedPanel({ task, post, related, compact = false }: { task: TaskKey;
         </div>
       ) : null}
     </aside>
+  )
+}
+
+function SectionLabel({ title }: { title: string }) {
+  return (
+    <div className="flex items-center gap-4">
+      <h2 className="shrink-0 text-xl font-black uppercase text-[#1f1f1f]">{title}</h2>
+      <div className="h-5 flex-1 border-y border-black/[0.08] bg-[repeating-linear-gradient(-45deg,transparent_0_3px,rgba(0,0,0,0.05)_3px_4px)]" />
+    </div>
   )
 }
 
@@ -419,16 +551,22 @@ function RelatedCard({ task, post }: { task: TaskKey; post: SitePost }) {
 
 function EditableComments({ slug, comments }: { slug: string; comments: Array<{ id: string; name: string; comment: string; createdAt: string }> }) {
   return (
-    <section className="mt-10 rounded-[2rem] border border-[var(--editable-border)] bg-white/70 p-5">
-      <div className="flex items-center gap-2 text-lg font-black"><MessageCircle className="h-5 w-5" /> Comments</div>
+    <section className="mt-10 border-t border-black/[0.08] pt-8">
+      <div className="flex items-center gap-2 text-3xl font-black text-[#1f1f1f]">Leave A Comment</div>
+      <p className="mt-4 text-base text-neutral-700">You must be logged in to post a comment.</p>
       <div className="mt-5 grid gap-3">
         {comments.slice(0, 5).map((comment) => (
-          <div key={comment.id} className="rounded-2xl border border-[var(--editable-border)] bg-white p-4">
+          <div key={comment.id} className="border border-[var(--editable-border)] bg-white p-4">
             <p className="text-sm font-black">{comment.name}</p>
             <p className="mt-2 text-sm leading-6 opacity-70">{comment.comment}</p>
           </div>
         ))}
         {!comments.length ? <p className="text-sm opacity-60">No comments yet for {slug}.</p> : null}
+        <div className="pt-2">
+          <Link href="/login" className="inline-flex items-center gap-2 bg-[#fb7a21] px-5 py-3 text-sm font-black uppercase text-white hover:opacity-90">
+            <MessageCircle className="h-4 w-4" /> Login to comment
+          </Link>
+        </div>
       </div>
     </section>
   )
